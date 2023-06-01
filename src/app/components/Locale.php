@@ -5,15 +5,16 @@ use Phalcon\Di\Injectable;
 use Phalcon\Translate\Adapter\NativeArray;
 use Phalcon\Translate\InterpolatorFactory;
 use Phalcon\Translate\TranslateFactory;
-
-session_start();
+use App\Middleware\Middleware;
 class Locale extends Injectable
 {
     /**
      * @return NativeArray
      */
     public function getTranslator(): NativeArray
-    {
+    {   
+        session_start();
+        Middleware::boot();
         $language = $_SESSION['language'];
         $messages = [];
         if (isset($_SESSION['language'])) {

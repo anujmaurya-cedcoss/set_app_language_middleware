@@ -76,20 +76,20 @@ $container->set(
     }
 );
 // injecting session in container
-$container->set(
-    'session',
-    function () {
-        $session = new Manager();
-        $files = new Stream(
-            [
-                'savePath' => '/tmp',
-            ]
-        );
-        $session->setAdapter($files);
-        $session->start();
-        return $session;
-    }
-);
+//     $container->set(
+//         'session',
+//         function () {
+//             $session = new Manager();
+//             $files = new Stream(
+//                 [
+//                 'savePath' => '/tmp',
+//                 ]
+//             );
+//             $session->setAdapter($files);
+//         $session->start();
+//         return $session;
+//     }
+// );
 // cache
 $container->set(
     'cache',
@@ -104,22 +104,24 @@ $container->set(
     }
 );
 
-$container->set('locale', (new Locale())->getTranslator());
-$application = new Application($container);
 
 $eventsManager = new EventsManager();
+
 use App\Middleware\Middleware;
+
 $eventsManager->attach(
-    'application:beforeHandleRequest',
+    'application:boot',
     // call to listener here
     new Middleware()
-    
+
 );
 $container->set(
     'EventsManager',
     $eventsManager
 );
+$application = new Application($container);
 $application->setEventsManager($eventsManager);
+$container->set('locale', (new Locale())->getTranslator());
 
 
 try {
